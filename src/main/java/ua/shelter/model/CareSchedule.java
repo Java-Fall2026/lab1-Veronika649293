@@ -1,10 +1,5 @@
 package ua.shelter.model;
 
-public class CareSchedule {
-    
-}
-package ua.shelter.model;
-
 import ua.common.BaseEntity;
 import ua.shelter.util.ShelterUtils;
 
