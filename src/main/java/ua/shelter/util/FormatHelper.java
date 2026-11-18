@@ -1,22 +1,18 @@
 package ua.shelter.util;
 
+/**
+ * Package-private helper class for string normalization and formatting.
+ */
 class FormatHelper {
 
     private FormatHelper() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
-    static String normalize(String value) {
-        if (value == null) {
-            return null;
-        }
-        return value.trim();
+    static String normalizeUpper(String input) {
+        return input == null ? null : input.trim().toUpperCase();
     }
 
-    static String normalizeUpper(String value) {
-        if (value == null) {
-            return null;
-        }
-        return value.trim().toUpperCase();
+    static String normalizeText(String input) {
+        return input == null ? null : input.trim().replaceAll("\\s+", " ");
     }
 }
