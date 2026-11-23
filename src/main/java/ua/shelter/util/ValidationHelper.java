@@ -1,56 +1,81 @@
 package ua.shelter.util;
 
-import java.time.LocalDate;
-import java.util.List;
+import ua.shelter.model.Animal;
 
+import java.time.LocalDate;
+
+/**
+ * Package-private helper class containing domain validation rules.
+ */
 class ValidationHelper {
 
+    static final LocalDate MIN_DATE = LocalDate.of(2000, 1, 1);
+    static final int MIN_FEEDINGS = 1;
+    static final int MAX_FEEDINGS = 6;
+
     private ValidationHelper() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
-    static void requireNotNull(Object obj, String fieldName) {
-        if (obj == null) {
-            throw new IllegalArgumentException(fieldName + " must not be null, got: null");
+    static void validateCode(String code, String fieldName) {
+        if (code == null || !code.matches("^[A-Z0-9-]{3,20}$")) {
+            throw new IllegalArgumentException(
+                    fieldName + " must match pattern ^[A-Z0-9-]{3,20}$, got: '" + code + "'"
+            );
         }
     }
 
-    static void requireNotBlank(String value, String fieldName) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " must not be blank, got: '" + value + "'");
+    static void validateName(String name, String fieldName) {
+        if (name == null || name.length() < 2 || name.length() > 60) {
+            throw new IllegalArgumentException(
+                    fieldName + " length must be between 2 and 60 characters, got: '" + name + "'"
+            );
         }
     }
 
-    static void requireInRange(int value, int min, int max, String fieldName) {
-        if (value < min || value > max) {
-            throw new IllegalArgumentException(fieldName + " must be between " + min + " and " + max + ", got: " + value);
+    static void validateBirthDate(LocalDate birthDate) {
+        LocalDate today = LocalDate.now();
+        if (birthDate == null || birthDate.isBefore(MIN_DATE) || birthDate.isAfter(today)) {
+            throw new IllegalArgumentException(
+                    "Birth date must be between " + MIN_DATE + " and " + today + ", got: " + birthDate
+            );
         }
     }
 
-    static void requireInList(String value, List<String> allowedValues, String fieldName) {
-        if (value == null || !allowedValues.contains(value)) {
-            throw new IllegalArgumentException(fieldName + " must be one of " + allowedValues + ", got: '" + value + "'");
+    static void validateHireDate(LocalDate hireDate) {
+        LocalDate today = LocalDate.now();
+        if (hireDate == null || hireDate.isBefore(MIN_DATE) || hireDate.isAfter(today)) {
+            throw new IllegalArgumentException(
+                    "Hire date must be between " + MIN_DATE + " and " + today + ", got: " + hireDate
+            );
         }
     }
 
-    static void requireDateBetween(LocalDate date, LocalDate minDate, LocalDate maxDate, String fieldName) {
-        requireNotNull(date, fieldName);
-        if (date.isBefore(minDate) || date.isAfter(maxDate)) {
-            throw new IllegalArgumentException(fieldName + " must be between " + minDate + " and " + maxDate + ", got: " + date);
+    static void validateScheduleDates(Animal animal, LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || startDate.isBefore(animal.getBirthDate())) {
+            throw new IllegalArgumentException(
+                    "Start date must not be before animal birth date (" + animal.getBirthDate() + "), got: " + startDate
+            );
+        }
+        if (endDate != null && endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException(
+                    "End date must not be before start date (" + startDate + "), got: " + endDate
+            );
         }
     }
 
-    static void requireDateNotAfter(LocalDate date, LocalDate maxDate, String fieldName) {
-        requireNotNull(date, fieldName);
-        if (date.isAfter(maxDate)) {
-            throw new IllegalArgumentException(fieldName + " must not be after " + maxDate + ", got: " + date);
+    static void validateKeeperHireDateForSchedule(LocalDate hireDate, LocalDate startDate) {
+        if (startDate.isBefore(hireDate)) {
+            throw new IllegalArgumentException(
+                    "Schedule start date must not be before keeper hire date (" + hireDate + "), got: " + startDate
+            );
         }
     }
 
-    static void requireDateNotBefore(LocalDate date, LocalDate minDate, String fieldName) {
-        requireNotNull(date, fieldName);
-        if (date.isBefore(minDate)) {
-            throw new IllegalArgumentException(fieldName + " must not be before " + minDate + ", got: " + date);
+    static void validateFeedingsPerDay(int feedingsPerDay) {
+        if (feedingsPerDay < MIN_FEEDINGS || feedingsPerDay > MAX_FEEDINGS) {
+            throw new IllegalArgumentException(
+                    "Feedings per day must be between " + MIN_FEEDINGS + " and " + MAX_FEEDINGS + ", got: " + feedingsPerDay
+            );
         }
     }
 }

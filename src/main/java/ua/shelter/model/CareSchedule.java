@@ -6,6 +6,9 @@ import ua.shelter.util.ShelterUtils;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Mutable entity representing a care schedule for an animal.
+ */
 public class CareSchedule extends BaseEntity {
 
     private final Animal animal;
@@ -26,7 +29,7 @@ public class CareSchedule extends BaseEntity {
         this.keeper = keeper;
 
         ShelterUtils.validateScheduleDates(animal, startDate, endDate);
-        ShelterUtils.validateKeeperHireDateForSchedule(keeper.getHireDate(), startDate);
+        ShelterUtils.validateKeeperHireDateForSchedule(keeper.hireDate(), startDate);
 
         this.startDate = startDate;
         setEndDate(endDate);
@@ -84,7 +87,7 @@ public class CareSchedule extends BaseEntity {
     public String toString() {
         return "CareSchedule{" +
                 "animal=" + animal.getChipNumber() +
-                ", keeper=" + keeper.getEmployeeBadge() +
+                ", keeper=" + keeper.employeeBadge() +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", feedingsPerDay=" + feedingsPerDay +

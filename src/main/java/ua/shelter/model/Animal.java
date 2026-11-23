@@ -6,19 +6,22 @@ import ua.shelter.util.ShelterUtils;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Mutable entity representing an animal in the shelter.
+ */
 public class Animal extends BaseEntity {
 
     private final String chipNumber;
     private final String nickname;
     private final Species species;
     private final LocalDate birthDate;
-    private String health;
+    private HealthStatus health;
 
-    public Animal(String chipNumber, String nickname, Species species, LocalDate birthDate, String health) {
+    public Animal(String chipNumber, String nickname, Species species, LocalDate birthDate, HealthStatus health) {
         super();
         this.chipNumber = ShelterUtils.checkAndNormalizeCode(chipNumber, "Chip number");
         this.nickname = ShelterUtils.checkAndNormalizeName(nickname, "Nickname");
-        
+
         if (species == null) {
             throw new IllegalArgumentException("Species must not be null, got: null");
         }
@@ -46,12 +49,15 @@ public class Animal extends BaseEntity {
         return birthDate;
     }
 
-    public String getHealth() {
+    public HealthStatus getHealth() {
         return health;
     }
 
-    public final void setHealth(String health) {
-        this.health = ShelterUtils.checkAndNormalizeHealth(health);
+    public final void setHealth(HealthStatus health) {
+        if (health == null) {
+            throw new IllegalArgumentException("Health status must not be null, got: null");
+        }
+        this.health = health;
     }
 
     @Override
@@ -72,9 +78,9 @@ public class Animal extends BaseEntity {
         return "Animal{" +
                 "chipNumber='" + chipNumber + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", species=" + species.getSpeciesCode() +
+                ", species=" + species.speciesCode() +
                 ", birthDate=" + birthDate +
-                ", health='" + health + '\'' +
+                ", health=" + health +
                 ", createdAt=" + createdAt +
                 '}';
     }
